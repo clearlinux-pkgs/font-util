@@ -4,7 +4,7 @@
 #
 Name     : font-util
 Version  : 1.3.1
-Release  : 6
+Release  : 7
 URL      : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.1.tar.gz
 Source0  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.1.tar.gz
 Summary  : Font utilities dirs
@@ -44,6 +44,7 @@ Summary: dev components for the font-util package.
 Group: Development
 Requires: font-util-bin
 Requires: font-util-data
+Provides: font-util-devel
 
 %description dev
 dev components for the font-util package.
@@ -61,10 +62,15 @@ doc components for the font-util package.
 %setup -q -n font-util-1.3.1
 
 %build
+export LANG=C
 %configure --disable-static
-make V=1 %{?_smp_mflags}
+make V=1  %{?_smp_mflags}
 
 %check
+export LANG=C
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
@@ -101,7 +107,7 @@ rm -rf %{buildroot}
 
 %files dev
 %defattr(-,root,root,-)
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/pkgconfig/fontutil.pc
 /usr/share/aclocal/*.m4
 
 %files doc
