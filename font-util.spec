@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xCFDF148828C642A7 (alanc@freedesktop.org)
 #
 Name     : font-util
-Version  : 1.3.1
-Release  : 12
-URL      : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.1.tar.gz
-Source0  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.1.tar.gz
-Source99 : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.1.tar.gz.sig
+Version  : 1.3.2
+Release  : 13
+URL      : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
+Source0  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
+Source1 : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz.sig
 Summary  : X.Org font utilities
 Group    : Development/Tools
 License  : BSD-2-Clause
@@ -28,10 +28,7 @@ BuildRequires : pkgconfig(xorg-macros)
 
 %description
 X.Org font package creation/installation utilities
-If the --with-fontrootdir option is specified when configuring this
-package, it will be recorded in the fontutil pkg-config file to be used
-as the default parent directory for font modules built using the fontutil
-macros from version 1.1 or later of this package.
+--------------------------------------------------
 
 %package bin
 Summary: bin components for the font-util package.
@@ -57,6 +54,7 @@ Group: Development
 Requires: font-util-bin = %{version}-%{release}
 Requires: font-util-data = %{version}-%{release}
 Provides: font-util-devel = %{version}-%{release}
+Requires: font-util = %{version}-%{release}
 Requires: font-util = %{version}-%{release}
 
 %description dev
@@ -91,17 +89,19 @@ man components for the font-util package.
 
 
 %prep
-%setup -q -n font-util-1.3.1
+%setup -q -n font-util-1.3.2
 pushd ..
-cp -a font-util-1.3.1 build32
+cp -a font-util-1.3.2 build32
 popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1557085630
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1567966421
+# -Werror is for werrorists
+export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -115,14 +115,14 @@ make  %{?_smp_mflags}
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
@@ -131,7 +131,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1557085630
+export SOURCE_DATE_EPOCH=1567966421
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/font-util
 cp COPYING %{buildroot}/usr/share/package-licenses/font-util/COPYING
