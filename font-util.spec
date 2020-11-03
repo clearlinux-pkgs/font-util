@@ -6,11 +6,11 @@
 #
 Name     : font-util
 Version  : 1.3.2
-Release  : 13
+Release  : 14
 URL      : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
 Source0  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
-Source1 : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz.sig
-Summary  : X.Org font utilities
+Source1  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz.sig
+Summary  : Font utilities dirs
 Group    : Development/Tools
 License  : BSD-2-Clause
 Requires: font-util-bin = %{version}-%{release}
@@ -55,7 +55,6 @@ Requires: font-util-bin = %{version}-%{release}
 Requires: font-util-data = %{version}-%{release}
 Provides: font-util-devel = %{version}-%{release}
 Requires: font-util = %{version}-%{release}
-Requires: font-util = %{version}-%{release}
 
 %description dev
 dev components for the font-util package.
@@ -90,6 +89,7 @@ man components for the font-util package.
 
 %prep
 %setup -q -n font-util-1.3.2
+cd %{_builddir}/font-util-1.3.2
 pushd ..
 cp -a font-util-1.3.2 build32
 popd
@@ -99,15 +99,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1567966421
-# -Werror is for werrorists
+export SOURCE_DATE_EPOCH=1604361981
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
 make  %{?_smp_mflags}
@@ -126,15 +125,15 @@ export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 cd ../build32;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1567966421
+export SOURCE_DATE_EPOCH=1604361981
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/font-util
-cp COPYING %{buildroot}/usr/share/package-licenses/font-util/COPYING
+cp %{_builddir}/font-util-1.3.2/COPYING %{buildroot}/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -186,7 +185,7 @@ popd
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/font-util/COPYING
+/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14
 
 %files man
 %defattr(0644,root,root,0755)
