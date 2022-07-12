@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xCFDF148828C642A7 (alanc@freedesktop.org)
 #
 Name     : font-util
-Version  : 1.3.2
-Release  : 14
-URL      : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
-Source0  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz
-Source1  : http://xorg.freedesktop.org/releases/individual/font/font-util-1.3.2.tar.gz.sig
+Version  : 1.3.3
+Release  : 15
+URL      : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz
+Source0  : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz
+Source1  : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz.sig
 Summary  : Font utilities dirs
 Group    : Development/Tools
 License  : BSD-2-Clause
@@ -88,10 +88,10 @@ man components for the font-util package.
 
 
 %prep
-%setup -q -n font-util-1.3.2
-cd %{_builddir}/font-util-1.3.2
+%setup -q -n font-util-1.3.3
+cd %{_builddir}/font-util-1.3.3
 pushd ..
-cp -a font-util-1.3.2 build32
+cp -a font-util-1.3.3 build32
 popd
 
 %build
@@ -99,20 +99,20 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1604361981
+export SOURCE_DATE_EPOCH=1657656210
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
 export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
@@ -130,15 +130,21 @@ cd ../build32;
 make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1604361981
+export SOURCE_DATE_EPOCH=1657656210
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/font-util
-cp %{_builddir}/font-util-1.3.2/COPYING %{buildroot}/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14
+cp %{_builddir}/font-util-1.3.3/COPYING %{buildroot}/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
 then
 pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
 for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
