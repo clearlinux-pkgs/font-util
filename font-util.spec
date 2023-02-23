@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xCFDF148828C642A7 (alanc@freedesktop.org)
 #
 Name     : font-util
-Version  : 1.3.3
-Release  : 15
-URL      : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz
-Source0  : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz
-Source1  : https://www.x.org/releases/individual/font/font-util-1.3.3.tar.gz.sig
+Version  : 1.4.0
+Release  : 16
+URL      : https://www.x.org/releases/individual/font/font-util-1.4.0.tar.gz
+Source0  : https://www.x.org/releases/individual/font/font-util-1.4.0.tar.gz
+Source1  : https://www.x.org/releases/individual/font/font-util-1.4.0.tar.gz.sig
 Summary  : Font utilities dirs
 Group    : Development/Tools
 License  : BSD-2-Clause
@@ -25,6 +25,9 @@ BuildRequires : glibc-libc32
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(32xorg-macros)
 BuildRequires : pkgconfig(xorg-macros)
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 
 %description
 X.Org font package creation/installation utilities
@@ -88,10 +91,10 @@ man components for the font-util package.
 
 
 %prep
-%setup -q -n font-util-1.3.3
-cd %{_builddir}/font-util-1.3.3
+%setup -q -n font-util-1.4.0
+cd %{_builddir}/font-util-1.4.0
 pushd ..
-cp -a font-util-1.3.3 build32
+cp -a font-util-1.4.0 build32
 popd
 
 %build
@@ -99,15 +102,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1657656210
+export SOURCE_DATE_EPOCH=1677181337
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
+export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -130,10 +133,10 @@ cd ../build32;
 make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1657656210
+export SOURCE_DATE_EPOCH=1677181337
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/font-util
-cp %{_builddir}/font-util-1.3.3/COPYING %{buildroot}/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14
+cp %{_builddir}/font-util-%{version}/COPYING %{buildroot}/usr/share/package-licenses/font-util/759423cdfc761cbbf5ac28dc6f0b7b825fa32b14 || :
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
